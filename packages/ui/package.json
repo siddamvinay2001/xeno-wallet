@@ -1,0 +1,29 @@
+{
+  "name": "@xeno/ui",
+  "version": "1.0.0",
+  "sideEffects": [
+    "*.css"
+  ],
+  "private": true,
+  "types": "./src",
+  "main": "src/index.tsx",
+  "module:jsx": "src",
+  "files": [
+    "types",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tamagui-build --skip-types",
+    "watch": "tamagui-build --skip-types --watch"
+  },
+  "dependencies": {
+    "@tamagui/next-theme": "^1.110.3",
+    "@tamagui/toast": "^1.110.3",
+    "@xeno/tamagui-config": "*",
+    "@xeno/tsconfig": "*",
+    "tamagui": "^1.110.3"
+  },
+  "devDependencies": {
+    "@tamagui/build": "^1.110.3"
+  }
+}
