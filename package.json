@@ -20,5 +20,8 @@
     "apps/*",
     "packages/*",
     "tools/*"
-  ]
+  ],
+  "dependencies": {
+    "@tamagui/babel-plugin": "^1.112.22"
+  }
 }

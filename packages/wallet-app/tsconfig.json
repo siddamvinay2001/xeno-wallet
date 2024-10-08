@@ -1,9 +1,0 @@
-{
-  "extends": "@xeno/tsconfig/base.json",
-  "include": ["**/*.ts", "**/*.tsx"],
-  "compilerOptions": {
-    "composite": true,
-    "jsx": "react-jsx"
-  },
-  "references": []
-}
