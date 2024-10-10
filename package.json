@@ -20,12 +20,5 @@
     "apps/*",
     "packages/*",
     "tools/*"
-<<<<<<< HEAD
   ]
-=======
-  ],
-  "dependencies": {
-    "zustand": "^5.0.0-rc.2"
-  }
->>>>>>> new-branch-name
 }
