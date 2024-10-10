@@ -22,6 +22,7 @@
     "tools/*"
   ],
   "dependencies": {
-    "@tamagui/babel-plugin": "^1.112.22"
+    "@tamagui/babel-plugin": "^1.112.22",
+    "zustand": "^5.0.0-rc.2"
   }
 }

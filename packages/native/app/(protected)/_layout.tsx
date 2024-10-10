@@ -1,10 +1,15 @@
 import { useSession } from "@/hooks/useSession";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { View , Text} from "react-native";
 
 export default function Layout(){
-    const {session} = useSession();
-    console.log("Curr Session", session);
+    const {session,storedPassword} = useSession();
+    if(!session && (storedPassword ===null || storedPassword === undefined)){
+        return <Redirect href={'/Welcome'} />
+    }
+    else if(!session && storedPassword){
+        return<Redirect href={'/LockScreen'} /> 
+    }
     return(
         <View>
             <Text> hsnfknsdlncldsk {session}</Text>
