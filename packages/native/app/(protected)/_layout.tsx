@@ -5,16 +5,14 @@ import { View , Text} from "react-native";
 export default function Layout(){
     const {session,storedPassword} = useSession();
     if(!session && (storedPassword ===null || storedPassword === undefined)){
-        return <Redirect href={'/Welcome'} />
+        return <Redirect href={'/(unprotected)/welcome'} />
     }
     else if(!session && storedPassword){
-        return<Redirect href={'/LockScreen'} /> 
+        return<Redirect href={'/(unprotected)/lockScreen'} /> 
     }
     return(
-        <View>
-            <Text> hsnfknsdlncldsk {session}</Text>
-            <Stack/>
-        </View>
-        
+        <Stack>
+            <Stack.Screen name="(tabs)" />
+        </Stack>
     )
 }
