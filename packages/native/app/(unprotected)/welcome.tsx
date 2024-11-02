@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    ...FONT_STYLES.title, // Spread operator to merge styles
+    ...FONT_STYLES.title, 
   },
   buttonContainer: {
     alignItems: 'center',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   button: {
-    width: BUTTON_STYLES.medium.width, // Example size, adjust as needed
+    width: BUTTON_STYLES.medium.width,
     height: BUTTON_STYLES.medium.height,
     padding: BUTTON_STYLES.medium.padding,
     borderRadius: 5,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: COLORS.buttonText,
-    fontSize: BUTTON_STYLES.medium.fontSize, // Adjust based on button size
+    fontSize: BUTTON_STYLES.medium.fontSize, 
   },
 });
 
