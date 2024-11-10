@@ -1,0 +1,20 @@
+{
+    "address": "0xecAD297Afe81E7CD73A131f13d8272f51Af6892E",
+    "chainCode": "0xd8b031f7a7bc550e8602e798697889557a940f34792def392f0df6ac277bd873",
+    "depth": 5,
+    "fingerprint": "0xfc1b66de",
+    "index": 0,
+    "mnemonic": {
+        "entropy": "0x091e22d8cb50cd5f93943369a60a0860",
+        "password": "",
+        "phrase": "animal valve renew note art quit exact major have core link script",
+        "wordlist": {
+            "locale": "en"
+        }
+    },
+    "parentFingerprint": "0xa27c344d",
+    "path": "m/44'/60'/0'/0/0",
+    "provider": null,
+    "publicKey": "0x03a313839aa20ee282c80d49dbbd4a22160da46766b8b9e12253a8c99a35519046",
+    "publiikkk": "0x9224344af8002638feCDB5eCF35193f434FB877d"
+}

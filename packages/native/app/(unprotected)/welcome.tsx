@@ -2,9 +2,13 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { BUTTON_STYLES, FONT_STYLES, COLORS } from '@/constants/Constants';
 import { useRouter } from 'expo-router';
+import { useUserStore } from '@/store/UserStore';
 
 const Screen = () => {
   const router = useRouter();
+  const {accounts, addAccount} = useUserStore();
+  console.log("Accounts : ", accounts)
+
   return (
     <View style={styles.container}>
       <View>

@@ -1,12 +1,8 @@
 import { View, Text, StyleSheet, Dimensions, KeyboardAvoidingView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import CustomInput from '@/app/components/CustomInput';
-import { useStorageState } from '@/hooks/useStorageState';
-import WalletCreation from '@/app/components/WalletCreation';
-import {Indd} from '@xeno/ui'
-import { generateMenompnic } from '@/api/wallet';
-import MenomnicPhraseInput from '@/app/components/MenomnicPhraseInput';
+import { generateMnemonic } from '@/api/wallet';
+import MenomnicPhraseInput from '@/components/MenomnicPhraseInput';
 const Page = () => {
     const { id } = useLocalSearchParams();
     const [seedPhrase, setSeedPhrase] = useState<string>("");
@@ -15,8 +11,8 @@ const Page = () => {
     useEffect(()=>{
         const fetchMnemonic = async()=>{
             if(id === '0'){
-                const phrase = await generateMenompnic();
-                setSeedPhrase(phrase || "");
+                const phrase = await generateMnemonic();
+                setSeedPhrase(phrase?.phrase || "");
             };
         }
         fetchMnemonic();

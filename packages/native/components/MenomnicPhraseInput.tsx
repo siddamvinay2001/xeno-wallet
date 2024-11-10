@@ -51,7 +51,6 @@ export const PhraseInput = ({ index, newWallet, content, onChangeHandler }) => {
 
 const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
     const [words, setWords] = useState(Array(12).fill(""));
-
     useEffect(() => {
         if (newWallet && seedPhrase) {
             const seedWords = seedPhrase.split(' ').slice(0, 12);

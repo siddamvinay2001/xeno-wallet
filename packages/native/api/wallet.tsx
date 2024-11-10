@@ -5,7 +5,6 @@ import { ethers } from 'ethers';
 export function generateMnemonic() {
     try {
         const mnemonic = ethers.Wallet.createRandom().mnemonic;
-        console.log(mnemonic);
         return mnemonic ? mnemonic : undefined;
     } catch (err) {
         console.log("Some error while fetching mnemonic: ", err);
@@ -19,8 +18,7 @@ export const deriveEtherFromMnemonic = (phrase, accountNumber = 0) => {
             throw new Error("Invalid mnemonic phrase");
         }        
         const wallet = ethers.HDNodeWallet.fromPhrase(phrase)
-        console.log("hdnode",wallet)
-
+        return wallet;
     } catch (err) {
         console.error("Error deriving wallet from mnemonic:", err);
         throw err;
