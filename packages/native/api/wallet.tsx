@@ -17,7 +17,8 @@ export const deriveEtherFromMnemonic = (phrase, accountNumber = 0) => {
         if (!ethers.Mnemonic.isValidMnemonic(phrase)) {
             throw new Error("Invalid mnemonic phrase");
         }        
-        const wallet = ethers.HDNodeWallet.fromPhrase(phrase)
+        const wallet = ethers.HDNodeWallet.fromPhrase(phrase,);
+        console.log("Wallet : ", wallet);
         return wallet;
     } catch (err) {
         console.error("Error deriving wallet from mnemonic:", err);

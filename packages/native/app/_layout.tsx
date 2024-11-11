@@ -1,4 +1,3 @@
-import { SessionProvider, useSession } from '@/hooks/useSession';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Redirect, Slot, Stack } from 'expo-router';
@@ -26,9 +25,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={DefaultTheme}>
-      <SessionProvider>
         <Slot />
-      </SessionProvider>
     </ThemeProvider>
   );
 }

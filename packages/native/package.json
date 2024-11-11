@@ -17,6 +17,7 @@
   "dependencies": {
     "@ethersproject/shims": "^5.7.0",
     "@expo/vector-icons": "^14.0.2",
+    "@react-native-clipboard/clipboard": "^1.15.0",
     "@react-navigation/native": "^6.0.2",
     "@xeno/ui": "*",
     "ethers": "^6.13.4",
