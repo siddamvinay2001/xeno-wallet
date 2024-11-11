@@ -4,11 +4,22 @@ import {
   TextInput,
   Platform,
   ScrollView,
-  Pressable,
+  Pressable
 } from "react-native";
+import Clipboard from '@react-native-clipboard/clipboard';
 import React, { useEffect, useState } from "react";
 import { BUTTON_STYLES, FONT_STYLES, COLORS } from "@/constants/Constants";
 import { deriveEtherFromMnemonic } from "@/api/wallet";
+import { Button, Dropdown } from "@xeno/ui";
+import { useUserStore } from "@/store/UserStore";
+import { useRouter } from "expo-router";
+import { useSession } from "@/hooks/useSession";
+
+enum NetworkName {
+  Solana = "Solana",
+  Bitcoin = "Bitcoin",
+  Ethereum = "Ethereum",
+}
 
 let test_phrase =
   "script answer will moon recipe pyramid other cabbage human visa grab whip";
@@ -63,14 +74,27 @@ export const PhraseInput = ({ index, newWallet, content, onChangeHandler }) => {
 
 const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
   const [words, setWords] = useState(Array(12).fill(""));
+  const [network, setNetwork] = useState("Select Network");
+  const [isCopied, setIsCopied] = useState(false);
+  const {accounts,id, addAccount} = useUserStore();
+  const router = useRouter();
+  const {signUp} = useSession();
+  
+      const handleCopy = () => {
+        Clipboard.setString(seedPhrase);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 1500);
+      };
+  
   useEffect(() => {
     if (newWallet && seedPhrase) {
       const seedWords = seedPhrase.split(" ").slice(0, 12);
       setWords(seedWords);
     }
   }, [newWallet, seedPhrase]);
+  console.log("Network : ", NetworkName.Bitcoin);
 
-  const onChange = (text, index) => {
+  const onChange = (text: any, index: number) => {
     setWords((prevWords) => {
       const newWords = [...prevWords]; // Create a new array
       newWords[index] = text; // Update the specific word
@@ -97,14 +121,28 @@ const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
                 index={index}
                 newWallet={newWallet}
                 content={word}
-                onChangeHandler={(text) => onChange(text, index)}
+                onChangeHandler={(text: any) => onChange(text, index)}
               />
             );
           })}
         </View>
       </ScrollView>
-      <View>
-      </View>
+      <View style={{ alignItems: "center", marginTop: 10, marginBottom: 20 }}>
+          <Button
+          text={isCopied ? "Copied!" : "Click to copy seed phrase"}
+          onClick={handleCopy}
+          style={{ padding: 10 }} 
+          disabled={isCopied}          
+          />
+    </View>
+      <Dropdown
+        label={network}
+        options={Object.entries(NetworkName).map(([key, value]) => ({
+          label: value, // Or transform this to a more readable format if needed
+          value: key,
+        }))}
+        onSelect={(value: any) => setNetwork(value)}
+      />
       <View
         style={{
           flexDirection: "column",
@@ -132,7 +170,16 @@ const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
             BUTTON_STYLES.secondary,
           ]}
           onPress={() => {
-            deriveEtherFromMnemonic(test_phrase, 0);
+           let wallet = deriveEtherFromMnemonic(seedPhrase, 0);
+
+           addAccount({
+            id: id,
+            accountName: "Account 0",
+            mneomnicPhrase: seedPhrase,
+            privateKey: wallet.privateKey,
+            blockChains: [NetworkName.Ethereum]
+           })
+           router.replace("/(unprotected)/setPassword");
           }}
         >
           <Text>Continue</Text>

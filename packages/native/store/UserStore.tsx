@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 // Define the Account type (adjust if needed)
 type Account = {
-  id: string;
+  id: number;
   accountName: string;
   mneomnicPhrase?: string;
   privateKey?: string;

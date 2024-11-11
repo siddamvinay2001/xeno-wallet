@@ -12,11 +12,12 @@ import { useState } from 'react';
 export interface ButtonProps {
   text: string;
   onClick?: (event: GestureResponderEvent) => void;
+  disabled?: boolean;
 }
 
-export function Button({ text, onClick }: ButtonProps) {
+export function Button({ text, onClick, style ,disabled }: ButtonProps & { style?: object }) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onClick}>
+    <TouchableOpacity style={[styles.button, style]} onPress={onClick} disabled={disabled}>
       <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>
   );
