@@ -5,7 +5,8 @@ import { useRouter } from 'expo-router';
 
 const index = () => {
   console.log("index");
-  const {accounts, password, setPassword} = useUserStore();
+  const {accounts, password, setPassword,setLoggedIn} = useUserStore();
+  
   console.log("Accounts : ", accounts);
   const router = useRouter();
   return (
@@ -13,6 +14,7 @@ const index = () => {
       <Text>index</Text>
       <Pressable onPress={() => {
         setPassword("google");
+        setLoggedIn(true);
         router.replace("/");
       }}><Text>click me</Text></Pressable>
     </View>
