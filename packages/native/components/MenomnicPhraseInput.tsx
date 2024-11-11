@@ -13,7 +13,6 @@ import { deriveEtherFromMnemonic } from "@/api/wallet";
 import { Button, Dropdown } from "@xeno/ui";
 import { useUserStore } from "@/store/UserStore";
 import { useRouter } from "expo-router";
-import { useSession } from "@/hooks/useSession";
 
 enum NetworkName {
   Solana = "Solana",
@@ -78,7 +77,6 @@ const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
   const [isCopied, setIsCopied] = useState(false);
   const {accounts,id, addAccount} = useUserStore();
   const router = useRouter();
-  const {signUp} = useSession();
   
       const handleCopy = () => {
         Clipboard.setString(seedPhrase);
