@@ -4,9 +4,7 @@ import { useUserStore } from '@/store/UserStore';
 import { useRouter } from 'expo-router';
 
 const index = () => {
-  console.log("index");
   const {accounts, password, setPassword} = useUserStore();
-  console.log("Accounts : ", accounts);
   const router = useRouter();
   return (
     <View>

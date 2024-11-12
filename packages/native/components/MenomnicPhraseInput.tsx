@@ -90,7 +90,6 @@ const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
       setWords(seedWords);
     }
   }, [newWallet, seedPhrase]);
-  console.log("Network : ", NetworkName.Bitcoin);
 
   const onChange = (text: any, index: number) => {
     setWords((prevWords) => {

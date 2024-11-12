@@ -5,7 +5,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 type Account = {
   id: number;
   accountName: string;
-  mneomnicPhrase?: string;
+  mneomnicPhrase?: string; 
   privateKey?: string;
   blockChains?: string[];
 };
@@ -14,8 +14,13 @@ type Account = {
 type UserStore = {
   id: number;
   accounts: Account[];
+  password?: string | null;
+  loggedIn?: boolean;
   addAccount: (account: Account) => void;
-  removeAccount: (id: string) => void;
+  removeAccount: (id: number) => void;
+  setPassword: (password: string) => void;
+  authenticate: (login: boolean) => void;
+  reset: () => void;
 };
 
 export const useUserStore = create<UserStore>()(
@@ -23,6 +28,8 @@ export const useUserStore = create<UserStore>()(
     (set, get) => ({
       id: 0,
       accounts: [],
+      password: null,
+      loggedIn: false,
       addAccount: (account) => {
         const currentAccounts = get().accounts;
         let currentId = get().id;
@@ -37,6 +44,21 @@ export const useUserStore = create<UserStore>()(
           accounts: currentAccounts.filter((account) => account.id !== id),
         });
       },
+
+      setPassword: (password) => {
+        set({ password });
+      },
+      authenticate: (login) => {
+        set({ loggedIn: login });
+      },
+      reset: () => {
+        set({
+          id: 0,
+          accounts: [],
+          password: null,
+          loggedIn: false,
+        });
+      }
     }),
     {
       name: 'account-storage', // The key used for storing in localStorage
