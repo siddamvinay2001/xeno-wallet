@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import { View , Text} from "react-native";
 
 export default function Layout(){
-    const {loggedIn, password, accounts, removeAccount} = useUserStore();
-    console.log("loggedIn : ", loggedIn);
-    console.log("password : ", password);
-    console.log("Accounts : ", accounts);
+    const {loggedIn, password, accounts, removeAccount, reset} = useUserStore();
+    // useEffect(() => {
+    //     reset()
+    // },[])
     if(!loggedIn && !password){
         return <Redirect href={'/(unprotected)/welcome'} />
     }
