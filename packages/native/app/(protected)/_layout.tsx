@@ -8,7 +8,6 @@ export default function Layout(){
     // useEffect(() => {
     //     reset()
     // },[])
-
     if(!loggedIn && !password){
         return <Redirect href={'/(unprotected)/welcome'} />
     }
@@ -17,7 +16,7 @@ export default function Layout(){
     }
     return(
         <Stack>
-            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(tabs)" options={{headerShown: false}} />
         </Stack>
     )
 }

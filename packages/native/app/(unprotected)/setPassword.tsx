@@ -4,13 +4,14 @@ import { useUserStore } from '@/store/UserStore';
 import { useRouter } from 'expo-router';
 
 const index = () => {
-  const {accounts, password, setPassword} = useUserStore();
+  const {accounts, password, setPassword,setLoggedIn} = useUserStore();
   const router = useRouter();
   return (
     <View>
       <Text>index</Text>
       <Pressable onPress={() => {
         setPassword("google");
+        setLoggedIn(true);
         router.replace("/");
       }}><Text>click me</Text></Pressable>
     </View>

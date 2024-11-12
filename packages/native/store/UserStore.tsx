@@ -1,5 +1,5 @@
-import {create} from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // Define the Account type (adjust if needed)
 type Account = {
@@ -13,13 +13,15 @@ type Account = {
 // Define the Store's state type
 type UserStore = {
   id: number;
+  password: string | null;
+  loggedIn: boolean;
   accounts: Account[];
   password?: string | null;
   loggedIn?: boolean;
   addAccount: (account: Account) => void;
   removeAccount: (id: number) => void;
-  setPassword: (password: string) => void;
-  authenticate: (login: boolean) => void;
+  setPassword: (password: string | null) => void;
+  setLoggedIn: (loggedIn: boolean) => void;
   reset: () => void;
 };
 
@@ -40,16 +42,18 @@ export const useUserStore = create<UserStore>()(
       },
       removeAccount: (id) => {
         const currentAccounts = get().accounts;
+        const updatedAccounts = currentAccounts.filter(
+          (account) => account.id !== id
+        );
         set({
-          accounts: currentAccounts.filter((account) => account.id !== id),
+          accounts: updatedAccounts,
         });
       },
-
       setPassword: (password) => {
         set({ password });
       },
-      authenticate: (login) => {
-        set({ loggedIn: login });
+      setLoggedIn: (loggedIn) => {
+        set({ loggedIn });
       },
       reset: () => {
         set({
@@ -61,7 +65,7 @@ export const useUserStore = create<UserStore>()(
       }
     }),
     {
-      name: 'account-storage', // The key used for storing in localStorage
+      name: "account-storage", // The key used for storing in localStorage
       storage: createJSONStorage(() => localStorage), // Optional: using localStorage or any other storage
     }
   )
