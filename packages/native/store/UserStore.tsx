@@ -5,7 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 type Account = {
   id: number;
   accountName: string;
-  mneomnicPhrase?: string; 
+  mnemonicPhrase?: string; // Fixed typo here
   privateKey?: string;
   blockChains?: string[];
 };
@@ -13,15 +13,13 @@ type Account = {
 // Define the Store's state type
 type UserStore = {
   id: number;
+  seedPhrase: string | null;
   password: string | null;
-  loggedIn: boolean;
   accounts: Account[];
-  password?: string | null;
-  loggedIn?: boolean;
   addAccount: (account: Account) => void;
+  setSeedPhrase: (phrase: string) => void;
   removeAccount: (id: number) => void;
   setPassword: (password: string | null) => void;
-  setLoggedIn: (loggedIn: boolean) => void;
   reset: () => void;
 };
 
@@ -31,8 +29,13 @@ export const useUserStore = create<UserStore>()(
       id: 0,
       accounts: [],
       password: null,
-      loggedIn: false,
-      addAccount: (account) => {
+      seedPhrase: null,
+      setSeedPhrase: (phrase: string) => {
+        set({
+          seedPhrase: phrase,
+        });
+      },
+      addAccount: (account: Account) => { // Added type for account parameter
         const currentAccounts = get().accounts;
         let currentId = get().id;
         set({
@@ -40,7 +43,7 @@ export const useUserStore = create<UserStore>()(
           accounts: [...currentAccounts, account], // Spread the existing accounts and add the new one
         });
       },
-      removeAccount: (id) => {
+      removeAccount: (id: number) => {
         const currentAccounts = get().accounts;
         const updatedAccounts = currentAccounts.filter(
           (account) => account.id !== id
@@ -49,20 +52,16 @@ export const useUserStore = create<UserStore>()(
           accounts: updatedAccounts,
         });
       },
-      setPassword: (password) => {
+      setPassword: (password: string | null) => {
         set({ password });
-      },
-      setLoggedIn: (loggedIn) => {
-        set({ loggedIn });
       },
       reset: () => {
         set({
           id: 0,
           accounts: [],
           password: null,
-          loggedIn: false,
         });
-      }
+      },
     }),
     {
       name: "account-storage", // The key used for storing in localStorage

@@ -1,22 +1,21 @@
+import { useSession } from "@/providers/SessionProvider";
 import { useUserStore } from "@/store/UserStore";
 import { Redirect, Stack } from "expo-router";
 import { useEffect } from "react";
-import { View , Text} from "react-native";
+import { View, Text } from "react-native";
 
-export default function Layout(){
-    const {loggedIn, password, accounts, removeAccount, reset} = useUserStore();
-    // useEffect(() => {
-    //     reset()
-    // },[])
-    if(!loggedIn && !password){
+export default function Layout() {
+    const { login, setLogin } = useSession();
+    const { password , reset} = useUserStore();
+
+    if (!login && !password) {
         return <Redirect href={'/(unprotected)/welcome'} />
     }
-    else if(!loggedIn && password){
-        return<Redirect href={'/(unprotected)/lockScreen'} /> 
-    }
-    return(
+    else if (!login && password) {
+        return <Redirect href={'/(unprotected)/lockScreen'} />
+    } return (
         <Stack>
-            <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
     )
 }

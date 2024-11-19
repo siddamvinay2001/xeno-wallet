@@ -1,59 +1,58 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import React, { useEffect } from "react";
-import { useUserStore } from "@/store/UserStore";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect, useState } from "react";
+import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
+import PinInput from "@/components/PinInput";  // Reusing your PinInput component
+import { useUserStore } from "@/store/UserStore";  // To access the stored password
+import { useSession } from "@/providers/SessionProvider";
+import { useRouter } from "expo-router";
 
 const LockScreen = () => {
-  const { accounts } = useUserStore();
-  const [code, setCode] = React.useState("");
-  const codeLength = Array(6).fill(0);
+  const [enteredPin, setEnteredPin] = useState(""); // State to hold the user's entered PIN
+  const { password, reset } = useUserStore();  // Assuming 'password' holds the saved PIN
+  const { setLogin } = useSession();  // To manage login state
+  const router = useRouter();
 
-  useEffect(() => {
-    if (code.length === 6) {
-      // TODO: Handle full code entry
+  
+
+  // Function to handle PIN verification
+  const handleVerifyPin = () => {
+    if (enteredPin === password) {
+      // PIN is correct, unlock access
+      setLogin(true);  // Set the login state to true
+      router.replace('/');  // Navigate to the main screen
+    } else {
+      // Show error if the PIN is incorrect
+      Alert.alert("Incorrect PIN", "The PIN you entered is incorrect.");
     }
-  }, [code]);
-
-  const onNumberPress = (number) => {
-    if (code.length < 6) {
-      setCode((prev) => prev + number);
-    }
-  };
-
-  const onBackspacePress = () => {
-    setCode((prev) => prev.slice(0, -1));
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.greeting}>Welcome back!</Text>
-      
-      {/* Code Entry Dots */}
-      <View style={styles.codeView}>
-        {codeLength.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.codeEmpty,
-              { backgroundColor: code[index] ? "#3D38ED" : "#D8DCE2" },
-            ]}
-          />
-        ))}
-      </View>
-      
-      {/* Number Pad */}
-      <View style={styles.numbersView}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, "0", "⌫"].map((item, index) => (
-          <Pressable
-            key={index}
-            onPress={() => (item === "⌫" ? onBackspacePress() : onNumberPress(item))}
-            style={styles.numberButton}
-          >
-            <Text style={styles.number}>{item}</Text>
-          </Pressable>
-        ))}
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text style={styles.header}>Enter Your PIN</Text>
+      <PinInput value={enteredPin} onChange={setEnteredPin} maxLength={6} />
+
+      {enteredPin.length === 6 && enteredPin !== password && (
+        <>
+        <Text style={styles.errorText}>Incorrect PIN. Please try again.</Text>
+        </>
+      )}
+
+      {enteredPin.length === 6 && enteredPin === password && (
+        <>
+        <Text style={styles.successText}>PIN Verified! Unlocking...</Text>
+        </>
+      )}
+
+      <Pressable
+        style={[
+          styles.button,
+          enteredPin.length === 6 && enteredPin !== password && styles.disabledButton,
+        ]}
+        onPress={handleVerifyPin}
+        disabled={enteredPin.length !== 6 || enteredPin !== password}
+      >
+        <Text style={styles.buttonText}>Unlock</Text>
+      </Pressable>
+    </View>
   );
 };
 
@@ -62,46 +61,42 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#fff",
+    padding: 20,
   },
-  greeting: {
+  header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 80,
-    alignSelf: "center",
+    marginBottom: 40,
   },
-  codeView: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 100,
-    gap: 20,
-    alignItems: "center",
+  button: {
+    backgroundColor: "#007bff",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+    marginTop: 20,
   },
-  codeEmpty: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+  disabledButton: {
+    backgroundColor: "#cccccc",
   },
-  numbersView: {
-    width: "80%", // Adjust container width for 3 columns
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  numberButton: {
-    width: "30%", // 30% width for 3 columns
-    aspectRatio: 1, // Ensures buttons are square
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 10,
-    borderRadius: 30,
-    backgroundColor: "#E0E0E0",
-  },
-  number: {
-    fontSize: 28,
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    textAlign: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: "center",
+  },
+  successText: {
+    color: "green",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 20,
+    textAlign: "center",
   },
 });
 
