@@ -8,7 +8,7 @@ import { useState } from "react";
 const Password = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { setPassword, addAccount, id } = useUserStore();
+  const { setPassword, addAccount, id, seedPhrase } = useUserStore();
   const { setLogin } = useSession();
   const router = useRouter();
 
@@ -24,6 +24,7 @@ const Password = () => {
     addAccount({
       id: id,
       accountName: "Account " + (id + 1),
+      mnemonicPhrase: seedPhrase
     });
     setLogin(true);
     router.replace('/');

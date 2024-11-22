@@ -1,10 +1,9 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useUserStore } from '@/store/UserStore'
 
 const index = () => {
-  const {accounts, password, seedPhrase} = useUserStore();
-  console.log(seedPhrase)
+  
   return (
     <View>
       <Text>index</Text>

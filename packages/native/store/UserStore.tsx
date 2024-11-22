@@ -5,7 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 type Account = {
   id: number;
   accountName: string;
-  mnemonicPhrase?: string; // Fixed typo here
+  mnemonicPhrase?: string | null; 
   privateKey?: string;
   blockChains?: string[];
 };
