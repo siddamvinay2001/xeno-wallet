@@ -9,65 +9,61 @@ const Password = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { setPassword, addAccount, id } = useUserStore();
-  const {setLogin}  = useSession();
+  const { setLogin } = useSession();
   const router = useRouter();
 
+  const isValidPassword = newPassword.length === 6 && /^\d{6}$/.test(newPassword);
+  const passwordsMatch = newPassword === confirmPassword;
 
   const handleSetPassword = () => {
-    if (newPassword !== confirmPassword) {
-      console.log("Passwords do not match.");
+    if (!isValidPassword) {
+      console.log("Passwords must be 6 digits and numeric.");
       return;
     }
-
-    if (!/^\d{6}$/.test(newPassword)) {
-      console.log("Passwords are not numeric.");
-      return;
-    }
-
     setPassword(newPassword);
-    addAccount(
-      {
-        id: id,
-        accountName: "Account " +(id+1),
-      }
-    )
+    addAccount({
+      id: id,
+      accountName: "Account " + (id + 1),
+    });
     setLogin(true);
-    router.replace('/')
+    router.replace('/');
+  };
+
+  const renderErrorText = () => {
+    if (newPassword.length === 6 && !isValidPassword) {
+      return <Text style={styles.errorText}>Password must be exactly 6 digits!</Text>;
+    }
+    if (newPassword.length === 6 && confirmPassword && !passwordsMatch) {
+      return <Text style={styles.errorText}>Passwords do not match.</Text>;
+    }
+    return null;
   };
 
   const isInConfirmationMode = newPassword.length === 6;
+
   return (
     <View style={styles.container}>
-      {!isInConfirmationMode && (
-        <>
-          <Text style={styles.header}>Set New Password</Text>
-          <PinInput value={newPassword} onChange={setNewPassword} maxLength={6} />
-        </>
-      )}
+      <Text style={styles.header}>
+        {isInConfirmationMode ? "Confirm New Password" : "Set New Password"}
+      </Text>
+      
+      <PinInput
+        value={isInConfirmationMode ? confirmPassword : newPassword}
+        onChange={isInConfirmationMode ? setConfirmPassword : setNewPassword}
+        maxLength={6}
+      />
 
-      {isInConfirmationMode && (
-        <>
-          <Text style={styles.header}>Confirm New Password</Text>
-          <PinInput value={confirmPassword} onChange={setConfirmPassword} maxLength={6} />
-        </>
-      )}
-
-      {newPassword && confirmPassword && newPassword !== confirmPassword && (
-        <Text style={styles.errorText}>Passwords do not match.</Text>
-      )}
-      {newPassword.length !== 6 && !isInConfirmationMode && (
-        <Text style={styles.errorText}>Password must be exactly 6 digits.</Text>
-      )}
+      {renderErrorText()}
 
       {isInConfirmationMode && (
         <Pressable
           style={[
             styles.button,
-            (newPassword !== confirmPassword) && styles.disabledButton,
-            (newPassword == confirmPassword) && styles.validButton,
+            !passwordsMatch && styles.disabledButton,
+            passwordsMatch && styles.validButton,
           ]}
           onPress={handleSetPassword}
-          disabled={newPassword !== confirmPassword}
+          disabled={!passwordsMatch}
         >
           <Text style={styles.buttonText}>Set Password</Text>
         </Pressable>
@@ -112,13 +108,6 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 14,
     marginTop: 10,
-    textAlign: "center",
-  },
-  successText: {
-    color: "green",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 20,
     textAlign: "center",
   },
 });
