@@ -13,15 +13,25 @@ import { Button, Dropdown } from "@xeno/ui";
 import { useUserStore } from "@/store/UserStore";
 import { useRouter } from "expo-router";
 import { BUTTON_STYLES, FONT_STYLES, COLORS } from "@/constants/Constants";
+import { useOnboardStore } from "@/store/OnboardStore";
 
+// Enum for network names
 enum NetworkName {
   Solana = "Solana",
   Bitcoin = "Bitcoin",
   Ethereum = "Ethereum",
 }
 
+// Define types for PhraseInput component props
+interface PhraseInputProps {
+  index: number;
+  content: string;
+  onChangeHandler: (text: string) => void;
+  newWallet: boolean;
+}
+
 // Reusable PhraseInput component
-const PhraseInput = ({ index, content, onChangeHandler, newWallet }) => {
+const PhraseInput: React.FC<PhraseInputProps> = ({ index, content, onChangeHandler, newWallet }) => {
   return (
     <View style={[styles.phraseInputContainer, newWallet && styles.newWallet]}>
       <Text style={styles.phraseInputText}>{`${index + 1}.`}</Text>
@@ -37,12 +47,18 @@ const PhraseInput = ({ index, content, onChangeHandler, newWallet }) => {
   );
 };
 
-const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
-  const [words, setWords] = useState(Array(12).fill(""));
-  const [network, setNetwork] = useState("Select Network");
-  const [isCopied, setIsCopied] = useState(false);
-  const { setSeedPhrase } = useUserStore();
+// Define types for MenomnicPhraseInput component props
+interface MenomnicPhraseInputProps {
+  seedPhrase: string;
+  newWallet: boolean;
+}
+
+const MenomnicPhraseInput: React.FC<MenomnicPhraseInputProps> = ({ seedPhrase, newWallet }) => {
+  const [words, setWords] = useState<string[]>(Array(12).fill(""));
+  const [network, setNetwork] = useState<string>("Ethereum");
+  const [isCopied, setIsCopied] = useState<boolean>(false);
   const router = useRouter();
+  const { setBlockChain, setSeedPhrase } = useOnboardStore();
 
   // Handle clipboard copy
   const handleCopy = () => {
@@ -60,7 +76,7 @@ const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
   }, [newWallet, seedPhrase]);
 
   // Handle word changes
-  const onChange = (text, index) => {
+  const onChange = (text: string, index: number) => {
     setWords((prevWords) => {
       const newWords = [...prevWords];
       newWords[index] = text;
@@ -72,58 +88,59 @@ const MenomnicPhraseInput = ({ seedPhrase, newWallet }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Mnemonic Phrase</Text>
       <View style={styles.hero}>
-      <ScrollView>
-        <View style={styles.phraseInputWrapper}>
-          {words.map((word, index) => (
-            <PhraseInput
-              key={index}
-              index={index}
-              content={word}
-              onChangeHandler={(text) => onChange(text, index)}
-              newWallet={newWallet}
-            />
-          ))}
+        <ScrollView>
+          <View style={styles.phraseInputWrapper}>
+            {words.map((word, index) => (
+              <PhraseInput
+                key={index}
+                index={index}
+                content={word}
+                onChangeHandler={(text) => onChange(text, index)}
+                newWallet={newWallet}
+              />
+            ))}
+          </View>
+        </ScrollView>
+
+        {/* Copy Seed Phrase Button */}
+        <View style={styles.copyButtonContainer}>
+          <Button
+            text={isCopied ? "Copied!" : "Copy seed phrase"}
+            onClick={handleCopy}
+            style={styles.copyButton}
+            disabled={isCopied}
+          />
         </View>
-      </ScrollView>
 
-      {/* Copy Seed Phrase Button */}
-      <View style={styles.copyButtonContainer}>
-        <Button
-          text={isCopied ? "Copied!" : "Copy seed phrase"}
-          onClick={handleCopy}
-          style={styles.copyButton}
-          disabled={isCopied}
+        {/* Network Dropdown */}
+        <Dropdown
+          label={network}
+          options={Object.entries(NetworkName).map(([key, value]) => ({
+            label: value,
+            value: key,
+          }))}
+          onSelect={(value: string) => setNetwork(value)}
         />
-      </View>
 
-      {/* Network Dropdown */}
-      <Dropdown
-        label={network}
-        options={Object.entries(NetworkName).map(([key, value]) => ({
-          label: value,
-          value: key,
-        }))}
-        onSelect={(value) => setNetwork(value)}
-      />
+        {/* Instructions */}
+        <View style={styles.instructionsContainer}>
+          <Text style={styles.instructionsText}>
+            {newWallet
+              ? "Please store this mnemonic phrase secretly. Forgetting the phrase can't revive your wallet."
+              : "Please enter your secret mnemonic phrase."}
+          </Text>
 
-      {/* Instructions */}
-      <View style={styles.instructionsContainer}>
-        <Text style={styles.instructionsText}>
-          {newWallet
-            ? "Please store this mnemonic phrase secretly. Forgetting the phrase can't revive your wallet."
-            : "Please enter your secret mnemonic phrase."}
-        </Text>
-
-        {/* Continue Button */}
-        <Pressable
-          style={[styles.continueButton, BUTTON_STYLES.secondary]}
-          onPress={() => {
-            setSeedPhrase(seedPhrase);
-            router.replace("/(unprotected)/setPassword")
-          }}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </Pressable>
+          {/* Continue Button */}
+          <Pressable
+            style={[styles.continueButton, BUTTON_STYLES.secondary]}
+            onPress={() => {
+              setBlockChain(network);
+              setSeedPhrase(seedPhrase);
+              router.replace("/(unprotected)/setPassword");
+            }}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -137,8 +154,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: COLORS.white,
   },
-  hero:{
-    flex:1,
+  hero: {
+    flex: 1,
     justifyContent: "flex-start"
   },
   title: {
@@ -175,7 +192,6 @@ const styles = StyleSheet.create({
     color: "black",
   },
   phraseInput: {
-    // flex: 1,
     borderBottomWidth: 1,
     borderBottomColor: "grey",
     padding: 5,

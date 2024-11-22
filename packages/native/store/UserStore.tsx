@@ -13,11 +13,11 @@ type Account = {
 // Define the Store's state type
 type UserStore = {
   id: number;
-  seedPhrase: string | null;
   password: string | null;
   accounts: Account[];
+  network: string;
+  setNetwork: (network: string) => void;
   addAccount: (account: Account) => void;
-  setSeedPhrase: (phrase: string) => void;
   removeAccount: (id: number) => void;
   setPassword: (password: string | null) => void;
   reset: () => void;
@@ -29,11 +29,9 @@ export const useUserStore = create<UserStore>()(
       id: 0,
       accounts: [],
       password: null,
-      seedPhrase: null,
-      setSeedPhrase: (phrase: string) => {
-        set({
-          seedPhrase: phrase,
-        });
+      network: "mainnet",
+      setNetwork: (network: string) => {
+        set({ network });
       },
       addAccount: (account: Account) => { // Added type for account parameter
         const currentAccounts = get().accounts;

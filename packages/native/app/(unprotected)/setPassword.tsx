@@ -4,11 +4,13 @@ import { useUserStore } from "@/store/UserStore";
 import { useSession } from "@/providers/SessionProvider";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useOnboardStore } from "@/store/OnboardStore";
 
 const Password = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { setPassword, addAccount, id, seedPhrase } = useUserStore();
+  const { setPassword, addAccount, id } = useUserStore();
+  const {seedPhrase, blockChain} = useOnboardStore();
   const { setLogin } = useSession();
   const router = useRouter();
 
@@ -24,7 +26,8 @@ const Password = () => {
     addAccount({
       id: id,
       accountName: "Account " + (id + 1),
-      mnemonicPhrase: seedPhrase
+      mnemonicPhrase: seedPhrase,
+      blockChains: [blockChain]
     });
     setLogin(true);
     router.replace('/');
