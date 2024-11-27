@@ -1,5 +1,5 @@
 import { useSession } from "@/providers/SessionProvider";
-import { useUserStore } from "@/store/UserStore";
+import { useUserStore } from "@xeno/store";
 import { Redirect, Stack } from "expo-router";
 import { useEffect } from "react";
 import { View, Text } from "react-native";

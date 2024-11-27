@@ -1,18 +1,19 @@
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
-import PinInput from "@/components/PinInput";
-import { useUserStore } from "@/store/UserStore";
-import { useSession } from "@/providers/SessionProvider";
+import React, { useState } from "react";
+import { View, Text, Pressable, StyleSheet, useWindowDimensions } from "react-native";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useUserStore } from "@/store/UserStore";
 import { useOnboardStore } from "@/store/OnboardStore";
+import { useSession } from "@/providers/SessionProvider";
+import { Button, CodeInput } from "@xeno/ui";
 
 const Password = () => {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const { setPassword, addAccount, id } = useUserStore();
-  const {seedPhrase, blockChain} = useOnboardStore();
+  const { seedPhrase, blockChain } = useOnboardStore();
   const { setLogin } = useSession();
   const router = useRouter();
+  const { width } = useWindowDimensions(); // Get the window width for responsive design
 
   const isValidPassword = newPassword.length === 6 && /^\d{6}$/.test(newPassword);
   const passwordsMatch = newPassword === confirmPassword;
@@ -24,10 +25,10 @@ const Password = () => {
     }
     setPassword(newPassword);
     addAccount({
-      id: id,
+      id,
       accountName: "Account " + (id + 1),
       mnemonicPhrase: seedPhrase,
-      blockChains: [blockChain]
+      blockChains: [blockChain],
     });
     setLogin(true);
     router.replace('/');
@@ -47,30 +48,20 @@ const Password = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>
-        {isInConfirmationMode ? "Confirm New Password" : "Set New Password"}
-      </Text>
-      
-      <PinInput
-        value={isInConfirmationMode ? confirmPassword : newPassword}
-        onChange={isInConfirmationMode ? setConfirmPassword : setNewPassword}
+      <View style={styles.headerWrapper}>
+        <Text style={styles.header}>
+          {isInConfirmationMode ? "Confirm New Password" : "Set New Password"}
+        </Text>
+        {renderErrorText()}
+      </View>
+
+      <CodeInput
+        code={isInConfirmationMode ? confirmPassword : newPassword}
+        onCodeChange={isInConfirmationMode ? setConfirmPassword : setNewPassword}
         maxLength={6}
       />
-
-      {renderErrorText()}
-
       {isInConfirmationMode && (
-        <Pressable
-          style={[
-            styles.button,
-            !passwordsMatch && styles.disabledButton,
-            passwordsMatch && styles.validButton,
-          ]}
-          onPress={handleSetPassword}
-          disabled={!passwordsMatch}
-        >
-          <Text style={styles.buttonText}>Set Password</Text>
-        </Pressable>
+        <Button text={"Set Password"} onClick={handleSetPassword} disabled={!passwordsMatch} />
       )}
     </View>
   );
@@ -84,10 +75,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
   },
+  headerWrapper: {
+    alignItems: "center", 
+    marginBottom: 40, 
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 40,
+    textAlign: "center",
+    marginBottom: 20,  
+    paddingHorizontal: 10, 
   },
   button: {
     backgroundColor: "#007bff",
@@ -113,7 +110,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
     textAlign: "center",
-  },
+  }
 });
 
 export default Password;

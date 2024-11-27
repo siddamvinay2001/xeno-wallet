@@ -1,61 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
-import PinInput from "@/components/PinInput";  // Reusing your PinInput component
-import { useUserStore } from "@/store/UserStore";  // To access the stored password
-import { useSession } from "@/providers/SessionProvider";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Alert, useWindowDimensions } from "react-native";
 import { useRouter } from "expo-router";
+import { useUserStore } from "@/store/UserStore";
+import { useSession } from "@/providers/SessionProvider";
+import { Button, CodeInput } from "@xeno/ui";  // Using Button and CodeInput from your UI library
 
-const LockScreen = () => {
+const LockScreenPage = () => {
   const [enteredPin, setEnteredPin] = useState(""); // State to hold the user's entered PIN
-  const { password, reset } = useUserStore();  // Assuming 'password' holds the saved PIN
-  const { setLogin } = useSession();  // To manage login state
+  const { password } = useUserStore(); // Assuming 'password' holds the saved PIN
+  const { setLogin } = useSession(); // To manage login state
   const router = useRouter();
+  const { width } = useWindowDimensions(); // For responsive layout
 
-  
-
-  // Function to handle PIN verification
+  // Handle the PIN verification
   const handleVerifyPin = () => {
     if (enteredPin === password) {
-      // PIN is correct, unlock access
-      setLogin(true);  // Set the login state to true
-      router.replace('/');  // Navigate to the main screen
+      setLogin(true); // Set login state to true
+      router.replace('/'); // Navigate to the main screen
     } else {
-      // Show error if the PIN is incorrect
       Alert.alert("Incorrect PIN", "The PIN you entered is incorrect.");
     }
   };
 
+  // Check if the PIN entered is valid
+  const isValidPin = enteredPin.length === 6 && enteredPin === password;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Enter Your PIN</Text>
-      <PinInput value={enteredPin} onChange={setEnteredPin} maxLength={6} />
+      <View style={styles.headerWrapper}>
+        <Text style={styles.header}>Enter Your PIN</Text>
+      </View>
 
+      {/* Pin Input Component */}
+      <CodeInput 
+        code={enteredPin} 
+        onCodeChange={setEnteredPin} 
+        maxLength={6} 
+      />
+
+      {/* Error and Success Messages */}
       {enteredPin.length === 6 && enteredPin !== password && (
-        <>
         <Text style={styles.errorText}>Incorrect PIN. Please try again.</Text>
-        </>
       )}
 
       {enteredPin.length === 6 && enteredPin === password && (
-        <>
         <Text style={styles.successText}>PIN Verified! Unlocking...</Text>
-        </>
       )}
 
-      <Pressable
-        style={[
-          styles.button,
-          enteredPin.length === 6 && enteredPin !== password && styles.disabledButton,
-        ]}
-        onPress={handleVerifyPin}
-        disabled={enteredPin.length !== 6 || enteredPin !== password}
-      >
-        <Text style={styles.buttonText}>Unlock</Text>
-      </Pressable>
+      {/* Unlock Button */}
+      <Button
+        text="Unlock"
+        onClick={handleVerifyPin}
+        disabled={enteredPin.length !== 6 || !isValidPin}
+        style={styles.button}
+      />
     </View>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -64,10 +67,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
   },
+  headerWrapper: {
+    alignItems: "center", 
+    marginBottom: 40, 
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 40,
+    textAlign: "center",
+    marginBottom: 20,
+    paddingHorizontal: 10,
   },
   button: {
     backgroundColor: "#007bff",
@@ -75,6 +84,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 5,
     marginTop: 20,
+    maxWidth: 300, // Ensure button is responsive
   },
   disabledButton: {
     backgroundColor: "#cccccc",
@@ -100,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LockScreen;
+export default LockScreenPage;

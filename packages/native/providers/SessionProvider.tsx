@@ -1,31 +1,27 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
-const SessionContext = createContext(null)
-
-export interface SessionProviderProps {
-    children: React.ReactNode
+interface SessionContextType {
+  login: boolean;
+  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SessionProvider = ({children}: SessionProviderProps) =>{
-    const [login, setLogin] = useState(false)
-    return(
-        <SessionContext.Provider
-            value={
-                {
-                    login,
-                    setLogin
-                }                
-            }
-        >
-            {children}
-        </SessionContext.Provider>
-    )
-}
+const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
-export const useSession = ()=>{
-    const context = useContext(SessionContext);
-    if (context === undefined) {
-        throw new Error("useSession must be used within a <SessionProvider/>");
-      }
-      return context;
-}
+
+export const SessionProvider = ({ children }: {children: ReactNode}) => {
+  const [login, setLogin] = useState<boolean>(false);
+
+  return (
+    <SessionContext.Provider value={{ login, setLogin }}>
+      {children}
+    </SessionContext.Provider>
+  );
+};
+
+export const useSession = (): SessionContextType => {
+  const context = useContext(SessionContext);
+  if (context === undefined) {
+    throw new Error("useSession must be used within a <SessionProvider/>");
+  }
+  return context;
+};

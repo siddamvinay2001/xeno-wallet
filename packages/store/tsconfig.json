@@ -1,0 +1,10 @@
+{
+  "extends": "@xeno/tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "strict": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+    }
+}

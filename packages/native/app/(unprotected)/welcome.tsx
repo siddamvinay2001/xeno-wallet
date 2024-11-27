@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import React from "react";
-import { BUTTON_STYLES, FONT_STYLES, COLORS } from "@/constants/Constants";
 import { useRouter } from "expo-router";
+import { Button } from "@xeno/ui";
 import { useUserStore } from "@/store/UserStore";
 const Screen = () => {
   const router = useRouter();
@@ -15,22 +15,14 @@ const Screen = () => {
         <Text >Your new next wallet</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Pressable
-          style={[styles.button, BUTTON_STYLES.primary]}
-          onPress={() => {
+        <Button
+          text="Create a new Wallet"
+          onClick={() => {
             router.push("/(unprotected)/creation/0");
-          }}
-        >
-          <Text style={styles.buttonText}>Create a new Wallet</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.button, BUTTON_STYLES.secondary]}
-          onPress={() => {
+          } }/>
+          <Button text={"Import from existing wallet"} onClick={() => {
             router.push("/(unprotected)/creation/1");
-          }}
-        >
-          <Text style={styles.buttonText}>Import from existing wallet</Text>
-        </Pressable>
+          }} />
       </View>
     </View>
   );
@@ -47,19 +39,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
     flexDirection: "column",
-  },
-  button: {
-    width: BUTTON_STYLES.medium.width,
-    height: BUTTON_STYLES.medium.height,
-    padding: BUTTON_STYLES.medium.padding,
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: COLORS.buttonText,
-    fontSize: BUTTON_STYLES.medium.fontSize,
-  },
+  }
 });
 
 export default Screen;

@@ -13,20 +13,7 @@ export function generateMnemonic() {
     }
 }
 
-export const deriveEtherFromMnemonic = (phrase, accountNumber = 0) => {
-    try {
-        if (!ethers.Mnemonic.isValidMnemonic(phrase)) {
-            throw new Error("Invalid mnemonic phrase");
-        }        
-        const wallet = ethers.HDNodeWallet.fromPhrase(phrase,);
-        console.log("Wallet : ", wallet);
-        return wallet;
-    } catch (err) {
-        console.error("Error deriving wallet from mnemonic:", err);
-        throw err;
-    }
-};
-export const getWalletFromMnemonic = (mnemonic , accountNumber = 0, blockChain="ETH") => {
+export const getWalletFromMnemonic = (mnemonic: string , accountNumber = 0, blockChain="ETH") => {
     try {
         if(blockChain === "ETH"){
             return getWalletFromMnemonicEthers(mnemonic, accountNumber);
